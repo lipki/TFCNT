@@ -91,6 +91,7 @@ import com.bioxx.tfc.Render.Blocks.RenderAnvil;
 import com.bioxx.tfc.Render.Blocks.RenderBarrel;
 import com.bioxx.tfc.Render.Blocks.RenderBellows;
 import com.bioxx.tfc.Render.Blocks.RenderBloomery;
+import com.bioxx.tfc.Render.Blocks.RenderBucketPile;
 import com.bioxx.tfc.Render.Blocks.RenderChest;
 import com.bioxx.tfc.Render.Blocks.RenderCrucible;
 import com.bioxx.tfc.Render.Blocks.RenderFence;
@@ -261,6 +262,7 @@ public class ClientProxy extends CommonProxy
 		RenderingRegistry.registerBlockHandler(TFCBlocks.torchRenderId = RenderingRegistry.getNextAvailableRenderId(), new RenderTorch());
 		RenderingRegistry.registerBlockHandler(TFCBlocks.smokeRenderId = RenderingRegistry.getNextAvailableRenderId(), new RenderSmoke());
 		RenderingRegistry.registerBlockHandler(TFCBlocks.smokeRackRenderId = RenderingRegistry.getNextAvailableRenderId(), new RenderSmokeRack());
+		RenderingRegistry.registerBlockHandler(TFCBlocks.bucketPileRenderId = RenderingRegistry.getNextAvailableRenderId(), new RenderBucketPile());
 		//Register our overlay changes
 		MinecraftForge.EVENT_BUS.register(new RenderOverlayHandler());
 	}

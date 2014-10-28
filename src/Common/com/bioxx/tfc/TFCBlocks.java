@@ -6,6 +6,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.init.Blocks;
 
 import com.bioxx.tfc.Blocks.BlockBloom;
+import com.bioxx.tfc.Blocks.BlockBucketPile;
 import com.bioxx.tfc.Blocks.BlockCharcoal;
 import com.bioxx.tfc.Blocks.BlockCrop;
 import com.bioxx.tfc.Blocks.BlockDetailed;
@@ -182,6 +183,7 @@ public class TFCBlocks
 	public static int torchRenderId;
 	public static int smokeRenderId;
 	public static int smokeRackRenderId;
+	public static int bucketPileRenderId;
 
 	public static Block StoneIgIn;
 	public static Block StoneIgEx;
@@ -248,6 +250,7 @@ public class TFCBlocks
 	public static Block TallGrass;
 	public static Block Charcoal;
 	public static Block Detailed;
+	public static Block BucketPile;
 
 	public static Block WoodConstruct;
 	public static Block WoodVert;
@@ -388,6 +391,7 @@ public class TFCBlocks
 		GameRegistry.registerBlock(LogPile, "LogPile");
 		GameRegistry.registerBlock(Charcoal, "Charcoal");
 		GameRegistry.registerBlock(Detailed, "Detailed");
+		GameRegistry.registerBlock(BucketPile, "BucketPile");
 
 		GameRegistry.registerBlock(tilledSoil, ItemSoil.class, "tilledSoil");
 		GameRegistry.registerBlock(tilledSoil2, ItemSoil.class, "tilledSoil2");
@@ -641,6 +645,8 @@ public class TFCBlocks
 		Charcoal = new BlockCharcoal().setHardness(3F).setResistance(10F).setBlockName("Charcoal");
 
 		Detailed = new BlockDetailed().setBlockName("StoneDetailed").setHardness(10);
+        
+		BucketPile = new BlockBucketPile().setHardness(3F).setResistance(10F).setBlockName("StackBucket");
 
 		Planks = (new BlockPlanks(Material.wood)).setHardness(4.0F).setResistance(5.0F).setStepSound(Block.soundTypeWood).setBlockName("wood");
 		Planks2 = (new com.bioxx.tfc.Blocks.BlockPlanks2(Material.wood)).setHardness(4.0F).setResistance(5.0F).setStepSound(Block.soundTypeWood).setBlockName("wood2");
