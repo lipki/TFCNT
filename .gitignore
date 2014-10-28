@@ -21,4 +21,7 @@ out
 *.iml
 mods
 asm
-
+gradlew
+.metadata/
+resourcepacks/
+*.log
