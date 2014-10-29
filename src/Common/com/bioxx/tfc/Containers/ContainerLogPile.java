@@ -98,10 +98,12 @@ public class ContainerLogPile extends ContainerTFC
 
 	protected void layoutContainer(IInventory playerInventory, IInventory chestInventory, int xSize, int ySize)
 	{
-		this.addSlotToContainer(new SlotLogPile(getPlayer(),chestInventory, 0, 71, 25));
-		this.addSlotToContainer(new SlotLogPile(getPlayer(),chestInventory, 1, 89, 25));
-		this.addSlotToContainer(new SlotLogPile(getPlayer(),chestInventory, 2, 71, 43));
-		this.addSlotToContainer(new SlotLogPile(getPlayer(),chestInventory, 3, 89, 43));
+		//this.addSlotToContainer(new SlotLogPile(getPlayer(),chestInventory, 0, 71, 25));
+		//this.addSlotToContainer(new SlotLogPile(getPlayer(),chestInventory, 1, 89, 25));
+		//this.addSlotToContainer(new SlotLogPile(getPlayer(),chestInventory, 2, 71, 43));
+		//this.addSlotToContainer(new SlotLogPile(getPlayer(),chestInventory, 3, 89, 43));
+		
+		this.addSlotToContainer(new SlotLogPile(getPlayer(),chestInventory, 0, 80, 34));
 	}
 	
 	public EntityPlayer getPlayer()

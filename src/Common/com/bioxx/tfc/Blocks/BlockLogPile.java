@@ -11,13 +11,16 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.IIcon;
 import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.Explosion;
+import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 import com.bioxx.tfc.Reference;
+import com.bioxx.tfc.TFCBlocks;
 import com.bioxx.tfc.TFCItems;
 import com.bioxx.tfc.TerraFirmaCraft;
 import com.bioxx.tfc.Core.TFC_Time;
@@ -40,6 +43,33 @@ public class BlockLogPile extends BlockTerraContainer
 	public static int getDirectionFromMetadata(int i)
 	{
 		return i & 3;
+	}
+
+	@Override
+	public boolean isOpaqueCube() {
+		return false;
+	}
+
+	@Override
+	public boolean renderAsNormalBlock() {
+		return false;
+	}
+	
+	@Override
+	public int getRenderType() {
+		return TFCBlocks.blockLogPileRenderId;
+	}
+	
+	@Override
+	public AxisAlignedBB getCollisionBoundingBoxFromPool(World world, int x, int y, int z) {
+		
+		TELogPile te = (TELogPile) world.getTileEntity(x, y, z);
+		if( te == null ) return AxisAlignedBB.getBoundingBox(x, y, z, x + 1, y + 1, z + 1);
+		int meta = te.getNumberOfLogs();
+		float p = 1/16F;
+    	float dy = (1-p)/4;
+    	int py = (int) Math.ceil(meta/4);
+		return AxisAlignedBB.getBoundingBox(x, y, z, x + 1, y + p+(py+1)*dy, z + 1);
 	}
 
 	@Override
@@ -129,9 +159,9 @@ public class BlockLogPile extends BlockTerraContainer
 	@Override
 	public void registerBlockIcons(IIconRegister iconRegisterer)
 	{
-		icons[0] = iconRegisterer.registerIcon(Reference.ModID + ":" + "devices/Log Pile Side 0");
-		icons[1] = iconRegisterer.registerIcon(Reference.ModID + ":" + "devices/Log Pile Side 1");
-		icons[2] = iconRegisterer.registerIcon(Reference.ModID + ":" + "devices/Log Pile End");
+		icons[0] = iconRegisterer.registerIcon(Reference.ModID + ":" + "wood/trees/Ash Log");
+		icons[1] = iconRegisterer.registerIcon(Reference.ModID + ":" + "wood/trees/Ash Log Side");
+		icons[2] = iconRegisterer.registerIcon(Reference.ModID + ":" + "wood/trees/Ash Log Top");
 	}
 
 	public void Eject(World world, int x, int y, int z)

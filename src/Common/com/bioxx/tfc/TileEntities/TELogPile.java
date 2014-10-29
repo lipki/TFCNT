@@ -32,7 +32,7 @@ public class TELogPile extends TileEntity implements IInventory
 
 	public TELogPile()
 	{
-		storage = new ItemStack[4];
+		storage = new ItemStack[1];
 		logPileOpeners = 0;
 		fireTimer = 100;
 	}
@@ -65,16 +65,13 @@ public class TELogPile extends TileEntity implements IInventory
 	public void clearContents()
 	{
 		storage[0] = null;
-		storage[1] = null;
-		storage[2] = null;
-		storage[3] = null;
 	}
 
 	@Override
 	public void closeInventory()
 	{
 		--logPileOpeners;
-		if(logPileOpeners == 0 && storage[0] == null && storage[1] == null && storage[2] == null && storage[3] == null)
+		if(logPileOpeners == 0 && storage[0] == null)
 		{
 			extinguishFire();
 			worldObj.setBlockToAir(xCoord, yCoord, zCoord);
@@ -95,12 +92,8 @@ public class TELogPile extends TileEntity implements IInventory
 
 	public int getNumberOfLogs()
 	{
-		int[] count = new int[4];
-		count[0] = storage[0] != null ? storage[0].stackSize : 0;
-		count[1] = storage[1] != null ? storage[1].stackSize : 0;
-		count[2] = storage[2] != null ? storage[2].stackSize : 0;
-		count[3] = storage[3] != null ? storage[3].stackSize : 0;
-		return count[0] + count[1] + count[2] + count[3];
+		int count = storage[0] != null ? storage[0].stackSize : 0;
+		return count;
 	}
 
 	@Override
@@ -141,7 +134,7 @@ public class TELogPile extends TileEntity implements IInventory
 	@Override
 	public int getInventoryStackLimit()
 	{
-		return 4;
+		return 16;
 	}
 
 	@Override

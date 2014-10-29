@@ -182,6 +182,7 @@ public class TFCBlocks
 	public static int torchRenderId;
 	public static int smokeRenderId;
 	public static int smokeRackRenderId;
+	public static int blockLogPileRenderId;
 
 	public static Block StoneIgIn;
 	public static Block StoneIgEx;
