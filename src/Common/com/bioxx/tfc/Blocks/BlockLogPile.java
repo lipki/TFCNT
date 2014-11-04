@@ -235,7 +235,7 @@ public class BlockLogPile extends BlockTerraContainer
 		TELogPile te = (TELogPile)world.getTileEntity(x, y, z);
 		if(te.isOnFire && te.fireTimer+TFCOptions.charcoalPitBurnTime < TFC_Time.getTotalHours())
 		{
-			te.createCharcoal(x, y, z);
+			te.createCharcoal(x, y, z, true);
 		}
 	}
 
