@@ -142,6 +142,7 @@ import com.bioxx.tfc.Render.TESR.TESRWorldItem;
 import com.bioxx.tfc.TileEntities.TEAnvil;
 import com.bioxx.tfc.TileEntities.TEBellows;
 import com.bioxx.tfc.TileEntities.TEChest;
+import com.bioxx.tfc.TileEntities.TEDoubleIngotPile;
 import com.bioxx.tfc.TileEntities.TEFirepit;
 import com.bioxx.tfc.TileEntities.TEFoodPrep;
 import com.bioxx.tfc.TileEntities.TEGrill;
@@ -290,7 +291,8 @@ public class ClientProxy extends CommonProxy
 	{
 		super.registerTileEntities(false);
 		ClientRegistry.registerTileEntity(TEChest.class, "chest", new TESRChest());
-		ClientRegistry.registerTileEntity(TEIngotPile.class, "ingotPile", new TESRIngotPile());
+		ClientRegistry.registerTileEntity(TEIngotPile.class, "ingotPile", new TESRIngotPile(false));
+		//ClientRegistry.registerTileEntity(TEDoubleIngotPile.class, "doubleIngotPile", new TESRIngotPile(true));
 		ClientRegistry.registerTileEntity(TEFirepit.class, "TerraFirepit", new TESRFirepit());
 		ClientRegistry.registerTileEntity(TELoom.class, "Loom", new TESRLoom());
 		//ModLoader.registerTileEntity(TileEntityBarrel.class, "barrel", new TileEntityBarrelRendererTFC());

@@ -14,10 +14,15 @@ import com.bioxx.tfc.TileEntities.TEIngotPile;
 public class TESRIngotPile extends TESRBase
 {
 	/** The normal small chest model. */
-	private final ModelIngotPile ingotModel = new ModelIngotPile();
+	private final ModelIngotPile ingotModel;
 	private static String[] metalTypes =  new String[]{"Bismuth", "Bismuth Bronze", "Black Bronze", "Black Steel", "Blue Steel", "Brass", 
 		"Bronze", "Copper", "Gold", "Wrought Iron", "Lead", "Nickel", "Pig Iron", "Platinum", "Red Steel", "Rose Gold", "Silver", "Steel",
 		"Sterling Silver", "Tin", "Zinc", "Unknown" };
+	
+	public TESRIngotPile( boolean ddouble ) {
+		ingotModel = new ModelIngotPile( ddouble );
+	}
+
 	/**
 	 * Renders the TileEntity for the chest at a position.
 	 */

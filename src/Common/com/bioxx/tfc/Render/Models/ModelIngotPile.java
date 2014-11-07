@@ -5,22 +5,24 @@ import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
 @SideOnly(Side.CLIENT)
-public class ModelIngotPile extends ModelBase
+public class ModelIngotPile extends ModelBase 
 {
 	public ModelRendererTFC[] renderer = new ModelRendererTFC[64];
 
-	public ModelIngotPile()
+	public ModelIngotPile( boolean ddouble )
 	{
-		for (int n = 0; n < 64; n++){
+		int maxMeta = (ddouble ? 32 : 64);
+		
+		for (int n = 0; n < maxMeta; n++){
 			this.renderer[n] = new ModelRendererTFC(this,0,0);
 			int m = (n+8)/8;
 			float x = (n %4)*0.25f;
-			float y = (m -1)*0.125f;
+			float y = (m -1)*(ddouble ? 0.25f : 0.125f);
 			float z = 0;
 
 			if (n%8 >=4) z = .5F;
 			
-			renderer[n].cubeList.add(new ModelIngot(renderer[n],renderer[n].textureOffsetX, renderer[n].textureOffsetY));
+			renderer[n].cubeList.add(new ModelIngot(renderer[n],renderer[n].textureOffsetX, renderer[n].textureOffsetY, ddouble));
 			renderer[n].offsetY = y;
 			if (m %2 == 1) {
 				renderer[n].rotateAngleY = 1.56F;

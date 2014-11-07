@@ -18,7 +18,7 @@ public class ModelIngot extends ModelBox
     /** An array of 6 TexturedQuads, one for each face of a cube */
     private TexturedQuad[] quadList;
 	
-	public ModelIngot(ModelRenderer renderer, int textureOffsetX, int textureOffsetY) {
+	public ModelIngot(ModelRenderer renderer, int textureOffsetX, int textureOffsetY, boolean ddouble) {
 		super(renderer, textureOffsetX, textureOffsetY, 0.5F, 0, 0.5F, 15, 4, 7, 0);
 		
 		float originX = .5f;
@@ -28,7 +28,7 @@ public class ModelIngot extends ModelBox
         this.vertexPositions = new PositionTextureVertex[8];
         this.quadList = new TexturedQuad[6];
         float maxX = originX + 15;
-        float maxY = originY + 4;
+        float maxY = originY + (ddouble ? 8 : 4);
         float maxZ = originZ + 7;
         
         PositionTextureVertex vert0 = new PositionTextureVertex(originX, originY, originZ, 0.0F, 0.0F);
@@ -52,12 +52,20 @@ public class ModelIngot extends ModelBox
         int x2 = textureOffsetX + 20;
         int x3 = textureOffsetX + 44;
         int x4 = textureOffsetX + 60;
-            
+        
         int y1 = textureOffsetY + 4;
-        int y2 = textureOffsetY + 8;
-        int y3 = textureOffsetY + 16;
-        int y4 = textureOffsetY + 20;
-        int y5 = textureOffsetY + 28;
+        int y2 = y1 + 4; //8
+        int y3 = y2 + 8; //16
+        int y4 = y3 + 4; //20
+        int y5 = y4 + 8; //28
+        
+        if (ddouble) {
+        	y1 = textureOffsetY + 2;
+        	y2 = y1 + 6; //8
+        	y3 = y2 + 8; //16
+        	y4 = y3 + 6; //22
+        	y5 = y4 + 8; //30
+        }
         
         this.quadList[0] = new TexturedQuad(new PositionTextureVertex[] {vert5, vert1, vert2, vert6}, 
         		x3, y1, x4, y2, renderer.textureWidth, renderer.textureHeight); // petit
