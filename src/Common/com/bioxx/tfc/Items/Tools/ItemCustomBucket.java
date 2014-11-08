@@ -119,7 +119,6 @@ public class ItemCustomBucket extends ItemTerra
 	
 		if(is.getItemDamage() == 0 && !world.isRemote && player.isSneaking())
 		{
-
 			if(world.isAirBlock(x + map[side][0], y + map[side][1], z + map[side][2]))
 			{
 				world.setBlock(x + map[side][0], y + map[side][1], z + map[side][2], TFCBlocks.BucketPile, 0, 0x2);
@@ -128,7 +127,7 @@ public class ItemCustomBucket extends ItemTerra
 			}
 			return true;
 		} else if (!isEmpty && world.isAirBlock( x + map[side][0], y + map[side][1], z + map[side][2] ) ) {
-			world.setBlock( x + map[side][0], y + map[side][1], z + map[side][2], TFCBlocks.FreshWaterStationary, 2, 0x1 );
+			world.setBlock( x + map[side][0], y + map[side][1], z + map[side][2], TFCBlocks.FreshWater, 2, 0x1 );
 			player.setCurrentItemOrArmor(0, new ItemStack(TFCItems.WoodenBucketEmpty));
 			return true;
 		}
