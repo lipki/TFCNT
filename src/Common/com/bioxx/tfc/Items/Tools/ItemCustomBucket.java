@@ -114,6 +114,7 @@ public class ItemCustomBucket extends ItemTerra
 	@Override
 	public boolean onItemUse(ItemStack is, EntityPlayer player, World world, int x, int y, int z, int side, float hitX, float hitY, float hitZ)
 	{
+		boolean isEmpty = this.bucketContents == Blocks.air;
 		int[][] map = {{0,-1,0},{0,1,0},{0,0,-1},{0,0,1},{-1,0,0},{1,0,0}};
 	
 		if(is.getItemDamage() == 0 && !world.isRemote && player.isSneaking())
@@ -126,7 +127,12 @@ public class ItemCustomBucket extends ItemTerra
 				TFCBlocks.BucketPile.onNeighborBlockChange(world, x + map[side][0], y + map[side][1], z + map[side][2], world.getBlock(x + map[side][0], y + map[side][1], z + map[side][2]));
 			}
 			return true;
+		} else if (!isEmpty && world.isAirBlock( x + map[side][0], y + map[side][1], z + map[side][2] ) ) {
+			world.setBlock( x + map[side][0], y + map[side][1], z + map[side][2], TFCBlocks.FreshWaterStationary, 2, 0x1 );
+			player.setCurrentItemOrArmor(0, new ItemStack(TFCItems.WoodenBucketEmpty));
+			return true;
 		}
+		
 		return false;
 	}
 
