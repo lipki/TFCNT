@@ -22,6 +22,7 @@ import com.bioxx.tfc.TerraFirmaCraft;
 import com.bioxx.tfc.Blocks.BlockTerraContainer;
 import com.bioxx.tfc.Core.TFC_Core;
 import com.bioxx.tfc.Items.ItemStick;
+import com.bioxx.tfc.Items.ItemTorchOff;
 import com.bioxx.tfc.Items.Tools.ItemFirestarter;
 import com.bioxx.tfc.Items.Tools.ItemFlintSteel;
 import com.bioxx.tfc.TileEntities.TEForge;
@@ -76,6 +77,12 @@ public class BlockForge extends BlockTerraContainer
 		else if(tef.fireTemp > 0 && equippedItem != null && equippedItem.getItem() instanceof ItemStick )
 		{
 			entityplayer.inventory.consumeInventoryItem(TFCItems.Stick);
+			TFC_Core.giveItemToPlayer(new ItemStack(TFCBlocks.Torch), entityplayer);
+			return true;
+		}
+		else if(tef.fireTemp > 0 && equippedItem != null && equippedItem.getItem() instanceof ItemTorchOff )
+		{
+			entityplayer.inventory.consumeInventoryItem(TFCItems.TorchOff);
 			TFC_Core.giveItemToPlayer(new ItemStack(TFCBlocks.Torch), entityplayer);
 			return true;
 		}

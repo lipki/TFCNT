@@ -40,7 +40,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockTorch extends BlockTerraContainer
 {
+	static Random random = new Random();
 	IIcon offIcon;
+	
 	public BlockTorch()
 	{
 		super(Material.circuits);
@@ -88,14 +90,34 @@ public class BlockTorch extends BlockTerraContainer
 				player.inventory.consumeInventoryItem(TFCItems.Stick);
 				TFC_Core.giveItemToPlayer(new ItemStack(TFCBlocks.Torch), player);
 			}
-			else if(player.inventory.getCurrentItem() != null && 
-					player.inventory.getCurrentItem().getItem() == Item.getItemFromBlock(TFCBlocks.Torch))
+			else if(equippedItem != null)
 			{
-				TELightEmitter te = (TELightEmitter)world.getTileEntity(x, y, z);
-				te.hourPlaced = (int)TFC_Time.getTotalHours();
-				if (world.getBlockMetadata(x, y, z) >= 8)
+				if( equippedItem.getItem() instanceof ItemTorch )
 				{
-				    world.setBlockMetadataWithNotify(x, y, z, world.getBlockMetadata(x, y, z)-8, 3);
+					TELightEmitter te = (TELightEmitter)world.getTileEntity(x, y, z);
+					te.hourPlaced = (int)TFC_Time.getTotalHours();
+					if (world.getBlockMetadata(x, y, z) >= 8)
+					    world.setBlockMetadataWithNotify(x, y, z, world.getBlockMetadata(x, y, z)-8, 3);
+				}
+				else if ( equippedItem.getItem() instanceof ItemFirestarter || equippedItem.getItem() instanceof ItemFlintSteel  )
+				{
+
+					int chance = new Random().nextInt(100);
+					int ss = equippedItem.stackSize;
+					int dam = equippedItem.getItemDamage()+1;
+
+					if(dam >= player.getCurrentEquippedItem().getItem().getMaxDamage())
+						player.inventory.setInventorySlotContents(player.inventory.currentItem, null);
+					else
+						player.inventory.setInventorySlotContents(player.inventory.currentItem, new ItemStack(equippedItem.getItem(),ss,dam));
+
+					if( equippedItem.getItem() instanceof ItemFlintSteel || chance > 70 )
+					{
+						TELightEmitter te = (TELightEmitter)world.getTileEntity(x, y, z);
+						te.hourPlaced = (int)TFC_Time.getTotalHours();
+						if (world.getBlockMetadata(x, y, z) >= 8)
+						    world.setBlockMetadataWithNotify(x, y, z, world.getBlockMetadata(x, y, z)-8, 3);
+					}
 				}
 			}
 		}
@@ -118,7 +140,8 @@ public class BlockTorch extends BlockTerraContainer
 
 		if(metadata >= 8)
 		{
-			ret.add(new ItemStack(TFCItems.TorchOff, 1, 0));
+			if (random.nextInt(2) == 0)
+				ret.add(new ItemStack(TFCItems.TorchOff, 1, 0));
 		}
 		else if (item != null)
 		{
