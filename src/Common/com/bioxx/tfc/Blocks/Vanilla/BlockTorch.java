@@ -40,7 +40,9 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockTorch extends BlockTerraContainer
 {
+	static Random random = new Random();
 	IIcon offIcon;
+	
 	public BlockTorch()
 	{
 		super(Material.circuits);
@@ -138,7 +140,8 @@ public class BlockTorch extends BlockTerraContainer
 
 		if(metadata >= 8)
 		{
-			ret.add(new ItemStack(TFCItems.TorchOff, 1, 0));
+			if (random.nextInt(2) == 0)
+				ret.add(new ItemStack(TFCItems.TorchOff, 1, 0));
 		}
 		else if (item != null)
 		{
