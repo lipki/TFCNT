@@ -25,6 +25,7 @@ import com.bioxx.tfc.TerraFirmaCraft;
 import com.bioxx.tfc.Blocks.BlockTerraContainer;
 import com.bioxx.tfc.Core.TFC_Core;
 import com.bioxx.tfc.Items.ItemLogs;
+import com.bioxx.tfc.Items.ItemTorchOff;
 import com.bioxx.tfc.TileEntities.TEFirepit;
 
 public class BlockFirepit extends BlockTerraContainer
@@ -73,6 +74,12 @@ public class BlockFirepit extends BlockTerraContainer
 		else if(te.fireTemp > 0 && item == TFCItems.Stick)
 		{
 			entityplayer.inventory.consumeInventoryItem(TFCItems.Stick);
+			TFC_Core.giveItemToPlayer(new ItemStack(TFCBlocks.Torch), entityplayer);
+			return true;
+		}
+		else if(te.fireTemp > 0 && item == TFCItems.TorchOff)
+		{
+			entityplayer.inventory.consumeInventoryItem(TFCItems.TorchOff);
 			TFC_Core.giveItemToPlayer(new ItemStack(TFCBlocks.Torch), entityplayer);
 			return true;
 		}
