@@ -1,5 +1,6 @@
 package com.bioxx.tfc.Items.Tools;
 
+import java.util.BitSet;
 import java.util.Random;
 import java.util.Set;
 
@@ -10,6 +11,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import com.bioxx.tfc.TFCBlocks;
+import com.bioxx.tfc.Blocks.BlockDetailed;
 import com.bioxx.tfc.Blocks.BlockSlab;
 import com.bioxx.tfc.Core.TFC_Core;
 import com.bioxx.tfc.Core.Player.PlayerInfo;
@@ -251,17 +253,9 @@ public class ItemChisel extends ItemTerraTool implements IToolChisel
 			te.TypeID = (short) Block.getIdFromBlock(id);
 			te.MetaID = (byte) meta;
 
-			for(int subX = 0; subX < 8; subX++)
-			{
-				for(int subZ = 0; subZ < 8; subZ++)
-				{
-					for(int subY = 0; subY < 8; subY++)
-					{
-						te.setBlock(subX, subY, subZ);
-						te.setQuad(subX, subY, subZ);
-					}
-				}
-			}
+			BitSet data = new BitSet(512);
+			data.set(0, 512);
+			te.setData(data);
 		}
 
 		world.notifyBlocksOfNeighborChange(x, y, z, world.getBlock(x, y, z));

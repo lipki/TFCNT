@@ -23,7 +23,6 @@ import com.bioxx.tfc.Items.Tools.ItemHammer;
 
 public class BlockStair extends BlockPartial
 {
-
 	public BlockStair(Material m)
 	{
 		super(m);
@@ -46,40 +45,30 @@ public class BlockStair extends BlockPartial
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 		int rvmeta = meta & 7;
-		float var9 = 0.0F;
-		float var10 = 0.5F;
-		float var11 = 0.5F;
-		float var12 = 1.0F;
+		float var9 = 0;
+		if ((meta & 8) != 0) var9 = .5F;
 
-		if ((meta & 8) != 0)
-		{
-			var9 = 0.5F;
-			var10 = 1.0F;
-			var11 = 0.0F;
-			var12 = 0.5F;
-		}
-
-		addCollisionBoxes(world, x, y, z, AABB, list, entity, 0.0F, var9, 0.0F, 1.0F, var10, 1.0F);
+			addCollisionBoxes(world, x, y, z, AABB, list, entity, 0  ,   0+var9, 0  , 1  , .5F+var9, 1);
 
 		if (rvmeta == 0 || rvmeta == 4)
-			addCollisionBoxes(world, x, y, z, AABB, list, entity, 0.5F, var11, 0.0F, 1.0F, var12, 1.0F);
+			addCollisionBoxes(world, x, y, z, AABB, list, entity, .5F, .5F-var9, 0  , 1  ,   1-var9, 1);
 		else if (rvmeta == 1 || rvmeta == 5)
-			addCollisionBoxes(world, x, y, z, AABB, list, entity, 0.0F, var11, 0.0F, 0.5F, var12, 1.0F);
+			addCollisionBoxes(world, x, y, z, AABB, list, entity, 0  , .5F-var9, 0  , .5F,   1-var9, 1);
 		else if (rvmeta == 2 || rvmeta == 6)
-			addCollisionBoxes(world, x, y, z, AABB, list, entity, 0.0F, var11, 0.5F, 1.0F, var12, 1.0F);
+			addCollisionBoxes(world, x, y, z, AABB, list, entity, 0  , .5F-var9, .5F, 1  ,   1-var9, 1);
 		else if (rvmeta == 3 || rvmeta == 7)
-			addCollisionBoxes(world, x, y, z, AABB, list, entity, 0.0F, var11, 0.0F, 1.0F, var12, 0.5F);
+			addCollisionBoxes(world, x, y, z, AABB, list, entity, 0  , .5F-var9, 0  , 1  ,   1-var9, .5F);
 		
 		if (rvmeta == 4)
-			addCollisionBoxes(world, x, y, z, AABB, list, entity, 0.0F, var11, 0.0F, 0.5F, var12, 0.5F);
+			addCollisionBoxes(world, x, y, z, AABB, list, entity, 0  , .5F-var9, 0  , .5F,   1-var9, .5F);
 		else if (rvmeta == 5)
-			addCollisionBoxes(world, x, y, z, AABB, list, entity, 0.5F, var11, 0.5F, 1.0F, var12, 1.0F);
+			addCollisionBoxes(world, x, y, z, AABB, list, entity, .5F, .5F-var9, .5F, 1  ,   1-var9, 1);
 		else if (rvmeta == 6)
-			addCollisionBoxes(world, x, y, z, AABB, list, entity, 0.5F, var11, 0.0F, 1.0F, var12, 0.5F);
+			addCollisionBoxes(world, x, y, z, AABB, list, entity, .5F, .5F-var9, 0  , 1  ,   1-var9, .5F);
 		else if (rvmeta == 7)
-			addCollisionBoxes(world, x, y, z, AABB, list, entity, 0.0F, var11, 0.5F, 0.5F, var12, 1.0F);
+			addCollisionBoxes(world, x, y, z, AABB, list, entity, 0  , .5F-var9, .5F, .5F,   1-var9, 1);
 
-		setBlockBounds(0f, 0f, 0f, 1f, 1f, 1f);
+		setBlockBoundsBasedOnSelection(world, x, y, z);
 	}
 	
 	public void addCollisionBoxes(World world, int x, int y, int z, AxisAlignedBB AABB, List list, Entity entity, float bx, float by, float bz, float tx, float ty, float tz)
@@ -91,21 +80,20 @@ public class BlockStair extends BlockPartial
 	@Override
 	public BitSet getData( World world, int x, int y, int z ) {
 		
-		BitSet data = new BitSet();
+		BitSet data = new BitSet(8);
 		int meta = world.getBlockMetadata(x, y, z);
 		
 		if( chiselmode == 1 ) {
 			if( meta !=  8 && meta != 10 && meta != 14 ) data.set((0 * 2 + 0)*2 + 0);
-			if( meta !=  8 && meta != 10 && meta != 14 ) data.set((0 * 2 + 0)*2 + 0);
 			if( meta != 10 && meta !=  9 && meta != 13 ) data.set((1 * 2 + 0)*2 + 0);
-			if( meta !=  9 && meta != 11 && meta != 15 ) data.set((1 * 2 + 1)*2 + 0);
-			if( meta != 11 && meta !=  8 && meta != 12 ) data.set((0 * 2 + 1)*2 + 0);
 			if( meta !=  0 && meta !=  2 && meta !=  6 ) data.set((0 * 2 + 0)*2 + 1);
 			if( meta !=  2 && meta !=  1 && meta !=  5 ) data.set((1 * 2 + 0)*2 + 1);
-			if( meta !=  1 && meta !=  3 && meta !=  7 ) data.set((1 * 2 + 1)*2 + 1);
+			if( meta != 11 && meta !=  8 && meta != 12 ) data.set((0 * 2 + 1)*2 + 0);
+			if( meta !=  9 && meta != 11 && meta != 15 ) data.set((1 * 2 + 1)*2 + 0);
 			if( meta !=  3 && meta !=  0 && meta !=  4 ) data.set((0 * 2 + 1)*2 + 1);
+			if( meta !=  1 && meta !=  3 && meta !=  7 ) data.set((1 * 2 + 1)*2 + 1);
 		} else if ( chiselmode == 3 ) {
-			data = StairToDetailledList(meta);
+			data = metaToDetailed(meta);
 		}
 		
 		return data;
@@ -183,9 +171,9 @@ public class BlockStair extends BlockPartial
 			else if(mode == 3)
 			{
 				int meta = world.getBlockMetadata(x, y, z);
-				BitSet data = StairToDetailledList(meta);
+				BitSet data = metaToDetailed(meta);
 				data = BlockDetailed.EmptyDetailedInt(xSelected, ySelected, zSelected, data);
-				BlockDetailed.ListToDetailled(world, x, y, z, data );
+				BlockDetailed.BitSetToDetailled(world, x, y, z, data );
 				data = null;
 				System.gc();
 				entityplayer.getCurrentEquippedItem().damageItem(1, entityplayer);
@@ -199,10 +187,6 @@ public class BlockStair extends BlockPartial
 	{
 		int meta = world.getBlockMetadata(x, y, z);
 		int newmeta = meta;
-		
-		System.out.println(hitX);
-		System.out.println(hitY);
-		System.out.println(hitZ);
 		
 		if( hitY > 0.5F ) {
 			if( ( meta == 4 && hitX <= 0.5F && hitZ <= 0.5F )
@@ -227,109 +211,28 @@ public class BlockStair extends BlockPartial
 		}
 		
 		if( meta == newmeta ) {
-			BitSet data = StairToDetailledList(meta);
-			data = EmptyStairFloat(hitX, hitY, hitZ, data);
-			BlockDetailed.ListToDetailled(world, x, y, z, data );
+			BitSet data = metaToDetailed(meta);
+			data.andNot(BlockDetailed.getEmptyQuad(hitX, hitY, hitZ));
+			BlockDetailed.BitSetToDetailled(world, x, y, z, data );
 			data = null;
 			System.gc();
 		} else
 			world.setBlockMetadataWithNotify(x, y, z, newmeta, 0x2);
 	}
 
-	public static BitSet StairToDetailledList(int meta)
+	public static BitSet metaToDetailed(int meta)
 	{
-		BitSet data = new BitSet();
+		BitSet data = new BitSet(512);
+		data.set(0, 512);
 		
-		if( meta != 8 && meta != 10 && meta != 14 )
-			for(int subX = 0; subX < 4; subX++) for(int subZ = 0; subZ < 4; subZ++) for(int subY = 0; subY < 4; subY++)
-				data.set((subX * 8 + subZ)*8 + subY, true);
-		if( meta != 10 && meta != 9 && meta != 13 )
-			for(int subX = 4; subX < 8; subX++) for(int subZ = 0; subZ < 4; subZ++) for(int subY = 0; subY < 4; subY++)
-				data.set((subX * 8 + subZ)*8 + subY, true);
-		if( meta != 9 && meta != 11 && meta != 15 )
-			for(int subX = 4; subX < 8; subX++) for(int subZ = 4; subZ < 8; subZ++) for(int subY = 0; subY < 4; subY++)
-				data.set((subX * 8 + subZ)*8 + subY, true);
-		if( meta != 11 && meta != 8 && meta != 12 )
-			for(int subX = 0; subX < 4; subX++) for(int subZ = 4; subZ < 8; subZ++) for(int subY = 0; subY < 4; subY++)
-				data.set((subX * 8 + subZ)*8 + subY, true);
-		if( meta != 0 && meta != 2 && meta != 6)
-			for(int subX = 0; subX < 4; subX++) for(int subZ = 0; subZ < 4; subZ++) for(int subY = 4; subY < 8; subY++)
-				data.set((subX * 8 + subZ)*8 + subY, true);
-		if( meta != 2 && meta != 1 && meta != 5 )
-			for(int subX = 4; subX < 8; subX++) for(int subZ = 0; subZ < 4; subZ++) for(int subY = 4; subY < 8; subY++)
-				data.set((subX * 8 + subZ)*8 + subY, true);
-		if( meta != 1 && meta != 3 && meta != 7 )
-			for(int subX = 4; subX < 8; subX++) for(int subZ = 4; subZ < 8; subZ++) for(int subY = 4; subY < 8; subY++)
-				data.set((subX * 8 + subZ)*8 + subY, true);
-		if( meta != 3 && meta != 0 && meta != 4 )
-			for(int subX = 0; subX < 4; subX++) for(int subZ = 4; subZ < 8; subZ++) for(int subY = 4; subY < 8; subY++)
-				data.set((subX * 8 + subZ)*8 + subY, true);
-		
-		return data;
-	}
-	
-	public static BitSet EmptyStairFloat(float hitX, float hitY, float hitZ, BitSet data) {
-		return EmptyStairFloat(hitX, hitY, hitZ, data, false);
-	}
-	
-	public static BitSet EmptyStairFloat(float hitX, float hitY, float hitZ, BitSet data, boolean state) {
-
-		boolean xmymzm = hitX < 0.5F && hitY < 0.5F && hitZ < 0.5F;
-		boolean xpymzm = hitX > 0.5F && hitY < 0.5F && hitZ < 0.5F;
-		boolean xpymzp = hitX > 0.5F && hitY < 0.5F && hitZ > 0.5F;
-		boolean xmymzp = hitX < 0.5F && hitY < 0.5F && hitZ > 0.5F;
-		boolean xmypzm = hitX < 0.5F && hitY > 0.5F && hitZ < 0.5F;
-		boolean xpypzm = hitX > 0.5F && hitY > 0.5F && hitZ < 0.5F;
-		boolean xpypzp = hitX > 0.5F && hitY > 0.5F && hitZ > 0.5F;
-		boolean xmypzp = hitX < 0.5F && hitY > 0.5F && hitZ > 0.5F;
-	
-		return EmptyStair(xmymzm, xpymzm, xpymzp, xmymzp, xmypzm, xpypzm, xpypzp, xmypzp, data, state);
-	}
-	
-	public static BitSet EmptyStairInt(int xSelected, int ySelected, int zSelected, BitSet data) {
-		return EmptyStairInt(xSelected, ySelected, zSelected, data, false);
-	}
-		
-	public static BitSet EmptyStairInt(int xSelected, int ySelected, int zSelected, BitSet data, boolean state) {
-		
-		boolean xmymzm = xSelected == 0 && ySelected == 0 && zSelected == 0;
-		boolean xpymzm = xSelected == 1 && ySelected == 0 && zSelected == 0;
-		boolean xpymzp = xSelected == 1 && ySelected == 0 && zSelected == 1;
-		boolean xmymzp = xSelected == 0 && ySelected == 0 && zSelected == 1;
-		boolean xmypzm = xSelected == 0 && ySelected == 1 && zSelected == 0;
-		boolean xpypzm = xSelected == 1 && ySelected == 1 && zSelected == 0;
-		boolean xpypzp = xSelected == 1 && ySelected == 1 && zSelected == 1;
-		boolean xmypzp = xSelected == 0 && ySelected == 1 && zSelected == 1;
-		
-		return EmptyStair(xmymzm, xpymzm, xpymzp, xmymzp, xmypzm, xpypzm, xpypzp, xmypzp, data, state);
-	}
-	
-	public static BitSet EmptyStair(boolean xmymzm, boolean xpymzm, boolean xpymzp, boolean xmymzp, boolean xmypzm, boolean xpypzm, boolean xpypzp, boolean xmypzp, BitSet data, boolean state) {
-		
-		if( xmymzm )
-			for(int subX = 0; subX < 4; subX++) for(int subZ = 0; subZ < 4; subZ++) for(int subY = 0; subY < 4; subY++)
-				data.set((subX * 8 + subZ)*8 + subY, state);
-		else if( xpymzm )
-			for(int subX = 4; subX < 8; subX++) for(int subZ = 0; subZ < 4; subZ++) for(int subY = 0; subY < 4; subY++)
-				data.set((subX * 8 + subZ)*8 + subY, state);
-		else if( xpymzp )
-			for(int subX = 4; subX < 8; subX++) for(int subZ = 4; subZ < 8; subZ++) for(int subY = 0; subY < 4; subY++)
-				data.set((subX * 8 + subZ)*8 + subY, state);
-		else if( xmymzp )
-			for(int subX = 0; subX < 4; subX++) for(int subZ = 4; subZ < 8; subZ++) for(int subY = 0; subY < 4; subY++)
-				data.set((subX * 8 + subZ)*8 + subY, state);
-		else if( xmypzm )
-			for(int subX = 0; subX < 4; subX++) for(int subZ = 0; subZ < 4; subZ++) for(int subY = 4; subY < 8; subY++)
-				data.set((subX * 8 + subZ)*8 + subY, state);
-		else if( xpypzm )
-			for(int subX = 4; subX < 8; subX++) for(int subZ = 0; subZ < 4; subZ++) for(int subY = 4; subY < 8; subY++)
-				data.set((subX * 8 + subZ)*8 + subY, state);
-		else if( xpypzp )
-			for(int subX = 4; subX < 8; subX++) for(int subZ = 4; subZ < 8; subZ++) for(int subY = 4; subY < 8; subY++)
-				data.set((subX * 8 + subZ)*8 + subY, state);
-		else if( xmypzp )
-			for(int subX = 0; subX < 4; subX++) for(int subZ = 4; subZ < 8; subZ++) for(int subY = 4; subY < 8; subY++)
-				data.set((subX * 8 + subZ)*8 + subY, state);
+		if( meta ==  8 || meta == 10 || meta == 14 ) data.andNot(BlockDetailed.quad_0_0_0);
+		if( meta == 10 || meta ==  9 || meta == 13 ) data.andNot(BlockDetailed.quad_1_0_0);
+		if( meta ==  0 || meta ==  2 || meta ==  6 ) data.andNot(BlockDetailed.quad_0_1_0);
+		if( meta ==  2 || meta ==  1 || meta ==  5 ) data.andNot(BlockDetailed.quad_1_1_0);
+		if( meta == 11 || meta ==  8 || meta == 12 ) data.andNot(BlockDetailed.quad_0_0_1);
+		if( meta ==  9 || meta == 11 || meta == 15 ) data.andNot(BlockDetailed.quad_1_0_1);
+		if( meta ==  3 || meta ==  0 || meta ==  4 ) data.andNot(BlockDetailed.quad_0_1_1);
+		if( meta ==  1 || meta ==  3 || meta ==  7 ) data.andNot(BlockDetailed.quad_1_1_1);
 		
 		return data;
 	}

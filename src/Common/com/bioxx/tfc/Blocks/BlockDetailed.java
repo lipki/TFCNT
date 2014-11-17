@@ -33,6 +33,15 @@ import cpw.mods.fml.relauncher.SideOnly;
 
 public class BlockDetailed extends BlockPartial
 {
+	public static BitSet quad_0_0_0 = new BitSet(512);
+	public static BitSet quad_1_0_0 = new BitSet(512);
+	public static BitSet quad_0_1_0 = new BitSet(512);
+	public static BitSet quad_1_1_0 = new BitSet(512);
+	public static BitSet quad_0_0_1 = new BitSet(512);
+	public static BitSet quad_1_0_1 = new BitSet(512);
+	public static BitSet quad_0_1_1 = new BitSet(512);
+	public static BitSet quad_1_1_1 = new BitSet(512);
+	
 	public static int lockX = 0;
 	public static int lockY = 0;
 	public static int lockZ = 0;
@@ -40,6 +49,30 @@ public class BlockDetailed extends BlockPartial
 	public BlockDetailed()
 	{
 		super(Material.rock);
+
+		for(int subX = 0; subX < 4; subX++) for(int subY = 0; subY < 4; subY++) for(int subZ = 0; subZ < 4; subZ++)
+			quad_0_0_0.set((subX * 8 + subZ)*8 + subY);
+		
+		for(int subX = 4; subX < 8; subX++) for(int subY = 0; subY < 4; subY++) for(int subZ = 0; subZ < 4; subZ++)
+			quad_1_0_0.set((subX * 8 + subZ)*8 + subY);
+		
+		for(int subX = 0; subX < 4; subX++) for(int subY = 4; subY < 8; subY++) for(int subZ = 0; subZ < 4; subZ++)
+			quad_0_1_0.set((subX * 8 + subZ)*8 + subY);
+		
+		for(int subX = 4; subX < 8; subX++) for(int subY = 4; subY < 8; subY++) for(int subZ = 0; subZ < 4; subZ++)
+			quad_1_1_0.set((subX * 8 + subZ)*8 + subY);
+		
+		for(int subX = 0; subX < 4; subX++) for(int subY = 0; subY < 4; subY++) for(int subZ = 4; subZ < 8; subZ++)
+			quad_0_0_1.set((subX * 8 + subZ)*8 + subY);
+		
+		for(int subX = 4; subX < 8; subX++) for(int subY = 0; subY < 4; subY++) for(int subZ = 4; subZ < 8; subZ++)
+			quad_1_0_1.set((subX * 8 + subZ)*8 + subY);
+		
+		for(int subX = 0; subX < 4; subX++) for(int subY = 4; subY < 8; subY++) for(int subZ = 4; subZ < 8; subZ++)
+			quad_0_1_1.set((subX * 8 + subZ)*8 + subY);
+		
+		for(int subX = 4; subX < 8; subX++) for(int subY = 4; subY < 8; subY++) for(int subZ = 4; subZ < 8; subZ++)
+			quad_1_1_1.set((subX * 8 + subZ)*8 + subY);
 	}
 
 	@Override
@@ -182,22 +215,19 @@ public class BlockDetailed extends BlockPartial
 
 		if(mode == 1)
 		{
-			BitSet data = new BitSet();
-			BlockStair.EmptyStairInt(xSelected, ySelected, zSelected, data, true);
-			
-			int index = -10;
-			
-			for(int subX = 0; subX < 8; subX++)
-			for(int subZ = 0; subZ < 8; subZ++)
-			for(int subY = 0; subY < 8; subY++)
-			{
-				index = (subX * 8 + subZ) * 8 + subY;
-				if(data.get(index))
-					deleteBox(world, x, y, z, player, te, index, hasChisel, hasHammer);
-			}
-			
-			data = null;
+			BitSet emptyQuad = BlockDetailed.getEmptyQuad(xSelected, ySelected, zSelected);
+			te.data.andNot(emptyQuad);
+			emptyQuad = null;
 			System.gc();
+			te.clearQuad(xSelected*4, ySelected*4, zSelected*4);
+					
+			deleteBox(world, x, y, z, te, TEDetailed.QUAD, xSelected, ySelected, zSelected);
+					
+			if(player.inventory.mainInventory[hasChisel] != null)
+				player.inventory.mainInventory[hasChisel].damageItem(1, player);
+
+			if(player.inventory.mainInventory[hasHammer] != null)
+				player.inventory.mainInventory[hasHammer].damageItem(1, player);
 			
 			return true;
 		}
@@ -205,47 +235,53 @@ public class BlockDetailed extends BlockPartial
 		{
 			int index = (xSelected * 8 + zSelected) * 8 + ySelected;
 			if(index >= 0)
-				deleteBox(world, x, y, z, player, te, index, hasChisel, hasHammer);
+			{
+				te.data.clear(index);
+				te.clearQuad(xSelected, ySelected, zSelected);
+				
+				deleteBox(world, x, y, z, te, TEDetailed.BOX, xSelected, ySelected, zSelected);
+				
+				if(player.inventory.mainInventory[hasChisel] != null)
+					player.inventory.mainInventory[hasChisel].damageItem(1, player);
+	
+				if(player.inventory.mainInventory[hasHammer] != null)
+					player.inventory.mainInventory[hasHammer].damageItem(1, player);
+			}
 			
 			return true;
 		}
 		return false;
 	}
 
-	public void deleteBox(World world, int x, int y, int z, EntityPlayer player, TEDetailed te, int index, int hasChisel, int hasHammer)
+	public void deleteBox(World world, int x, int y, int z, TEDetailed te, int shape, int xSelected, int ySelected, int zSelected)
 	{
-		te.data.clear(index);
-		te.clearQuad(xSelected, ySelected, zSelected);
 		if(te.isBlockEmpty())
-		{
 			world.setBlockToAir(x, y, z);
-		}
-		if(player.inventory.mainInventory[hasChisel] != null)
-			player.inventory.mainInventory[hasChisel].damageItem(1, player);
-
-		if(player.inventory.mainInventory[hasHammer] != null)
-			player.inventory.mainInventory[hasHammer].damageItem(1, player);
 		
 		NBTTagCompound nbt = new NBTTagCompound();
-		nbt.setByte("packetType", TEDetailed.Packet_Update);
-		nbt.setInteger("index", index);
+		nbt.setByte("packetType", TEDetailed.Packet_Delete);
+		nbt.setInteger("xSelected", xSelected);
+		nbt.setInteger("ySelected", ySelected);
+		nbt.setInteger("zSelected", zSelected);
+		nbt.setInteger("shape", shape);
 		te.createDataNBT(nbt);
 		te.broadcastPacketInRange(te.createDataPacket(nbt));
 	}
 
 	@Override
-	public void addCollisionBoxesToList(World world, int i, int j, int k, AxisAlignedBB aabb, List list, Entity entity)
+	public void addCollisionBoxesToList(World world, int x, int y, int z, AxisAlignedBB aabb, List list, Entity entity)
 	{
-		TEDetailed te = (TEDetailed) world.getTileEntity(i, j, k);
-		float div = 1f / 8;
+		TEDetailed te = (TEDetailed) world.getTileEntity(x, y, z);
+		int d = 8;
+		float div = 1f / d;
 
-		for(int subX = 0; subX < 8; subX++)
+		for(int subX = 0; subX < d; subX++)
 		{
-			for(int subZ = 0; subZ < 8; subZ++)
+			for(int subZ = 0; subZ < d; subZ++)
 			{
-				for(int subY = 0; subY < 8; subY++)
+				for(int subY = 0; subY < d; subY++)
 				{
-					if (te.data.get((subX * 8 + subZ)*8 + subY))
+					if (te.data.get((subX * d + subZ)*d + subY))
 					{
 						float minX = subX * div;
 						float maxX = minX + div;
@@ -255,12 +291,13 @@ public class BlockDetailed extends BlockPartial
 						float maxZ = minZ + div;
 
 						this.setBlockBounds(minX, minY, minZ, maxX, maxY, maxZ);
-						super.addCollisionBoxesToList(world, i, j, k, aabb, list, entity);
+						super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
 					}
 				}
 			}
 		}
-		setBlockBounds(0f, 0f, 0f, 1f, 1f, 1f);
+		
+		setBlockBoundsBasedOnSelection(world, x, y, z);
 	}
 	
 	public static int side = -1;
@@ -273,13 +310,15 @@ public class BlockDetailed extends BlockPartial
 		if (te == null) return data;
 		
 		if( chiselmode == 1 ) {
+
 			int subX = -1,subY = -1,subZ = -1;
+			
 			search: {
 				for(subX = 0; subX < 4; subX++) for(subZ = 0; subZ < 4; subZ++) for(subY = 0; subY < 4; subY++)
 					if(te.data.get((subX * 8 + subZ)*8 + subY)) break search;
 			}
 			if(subX != 4 || subY != 4 || subZ != 4) data.set((0 * 2 + 0)*2 + 0);
-
+			
 			search: {
 				for(subX = 4; subX < 8; subX++) for(subZ = 0; subZ < 4; subZ++) for(subY = 0; subY < 4; subY++)
 					if(te.data.get((subX * 8 + subZ)*8 + subY)) break search;
@@ -352,7 +391,7 @@ public class BlockDetailed extends BlockPartial
 		return data;
 	}
 	
-	public static void ListToDetailled(World world, int x, int y, int z, BitSet data)
+	public static void BitSetToDetailled(World world, int x, int y, int z, BitSet data)
 	{
 
 		TEPartial tep = (TEPartial)world.getTileEntity(x, y, z);
@@ -363,17 +402,47 @@ public class BlockDetailed extends BlockPartial
 		te.TypeID = tep.TypeID;
 		te.MetaID = tep.MetaID;
 		
-		for(int subX = 0; subX < 8; subX++)
-		for(int subZ = 0; subZ < 8; subZ++)
-		for(int subY = 0; subY < 8; subY++)
-			if(data.get((subX * 8 + subZ)*8 + subY))
-			{
-				te.setBlock(subX, subY, subZ);
-				te.setQuad(subX, subY, subZ);
+		te.setData(data);
+		
+		for (int subX = 0; subX < 8; subX++) {
+			for (int subZ = 0; subZ < 8; subZ++) {
+				for (int subY = 0; subY < 8; subY++) {
+					if (!te.getBlockExists(subX, subY, subZ))
+						te.setQuad(subX, subY, subZ);
+				}
 			}
+		}
 		
 		world.notifyBlocksOfNeighborChange(x, y, z, world.getBlock(x, y, z));
 		
 		return;
+	}
+	
+	public static BitSet getEmptyQuad(float hitX, float hitY, float hitZ) {
+
+			 if( hitX < 0.5F && hitY < 0.5F && hitZ < 0.5F ) return quad_0_0_0;
+		else if( hitX > 0.5F && hitY < 0.5F && hitZ < 0.5F ) return quad_1_0_0;
+		else if( hitX < 0.5F && hitY > 0.5F && hitZ < 0.5F ) return quad_0_1_0;
+		else if( hitX > 0.5F && hitY > 0.5F && hitZ < 0.5F ) return quad_1_1_0;
+		else if( hitX < 0.5F && hitY < 0.5F && hitZ > 0.5F ) return quad_0_0_1;
+		else if( hitX > 0.5F && hitY < 0.5F && hitZ > 0.5F ) return quad_1_0_1;
+		else if( hitX < 0.5F && hitY > 0.5F && hitZ > 0.5F ) return quad_0_1_1;
+		else if( hitX > 0.5F && hitY > 0.5F && hitZ > 0.5F ) return quad_1_1_1;
+				
+		return new BitSet(512);
+	}
+	
+	public static BitSet getEmptyQuad(int xSelected, int ySelected, int zSelected) {
+		
+			 if( xSelected == 0 && ySelected == 0 && zSelected == 0 ) return quad_0_0_0;
+		else if( xSelected == 1 && ySelected == 0 && zSelected == 0 ) return quad_1_0_0;
+		else if( xSelected == 0 && ySelected == 1 && zSelected == 0 ) return quad_0_1_0;
+		else if( xSelected == 1 && ySelected == 1 && zSelected == 0 ) return quad_1_1_0;
+		else if( xSelected == 0 && ySelected == 0 && zSelected == 1 ) return quad_0_0_1;
+		else if( xSelected == 1 && ySelected == 0 && zSelected == 1 ) return quad_1_0_1;
+		else if( xSelected == 0 && ySelected == 1 && zSelected == 1 ) return quad_0_1_1;
+		else if( xSelected == 1 && ySelected == 1 && zSelected == 1 ) return quad_1_1_1;
+				
+		return new BitSet(512);
 	}
 }
