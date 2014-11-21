@@ -120,14 +120,22 @@ public class BlockStair extends BlockPartial
 	public boolean isBlockSolid(IBlockAccess world, int x, int y, int z, int side)
 	{
 		boolean solidSides[][] = {
-				{ true, false, false, false, false, true },
-				{ true, false, false, false, true, false },
-				{ true, false, false, true, false, false },
-				{ true, false, true, false, false, false },
-				{ false, true, false, false, false, true },
-				{ false, true, false, false, true, false },
-				{ false, true, false, true, false, false },
-				{ false, true, true, false, false, false }
+				{ true, false, false, false, false, true  },
+				{ true, false, false, false, true , false },
+				{ true, false, false, true , false, false },
+				{ true, false, true , false, false, false },
+				{ true, false, true , false, false, true  },//4
+				{ true, false, false, true , true , false },//5
+				{ true, false, false, true , false, true  },//6
+				{ true, false, true , false, true , false },//7
+				{ false, true, false, false, false, true  },
+				{ false, true, false, false, true , false },
+				{ false, true, false, true , false, false },
+				{ false, true, true , false, false, false },
+				{ false, true, true , false, false, true  },//12
+				{ false, true, false, true , true , false },//13
+				{ false, true, false, true , false, true  },//14
+				{ false, true, true , false, true , false } //15
 		};
 
 		int meta = world.getBlockMetadata(x, y, z);
