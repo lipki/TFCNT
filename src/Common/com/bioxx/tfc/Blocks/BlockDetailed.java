@@ -276,26 +276,20 @@ public class BlockDetailed extends BlockPartial
 		float div = 1f / d;
 
 		for(int subX = 0; subX < d; subX++)
-		{
-			for(int subZ = 0; subZ < d; subZ++)
+		for(int subZ = 0; subZ < d; subZ++)
+		for(int subY = 0; subY < d; subY++)
+			if (te.data.get((subX * d + subZ)*d + subY))
 			{
-				for(int subY = 0; subY < d; subY++)
-				{
-					if (te.data.get((subX * d + subZ)*d + subY))
-					{
-						float minX = subX * div;
-						float maxX = minX + div;
-						float minY = subY * div;
-						float maxY = minY + div;
-						float minZ = subZ * div;
-						float maxZ = minZ + div;
+				float minX = subX * div;
+				float maxX = minX + div;
+				float minY = subY * div;
+				float maxY = minY + div;
+				float minZ = subZ * div;
+				float maxZ = minZ + div;
 
-						this.setBlockBounds(minX, minY, minZ, maxX, maxY, maxZ);
-						super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
-					}
-				}
+				this.setBlockBounds(minX, minY, minZ, maxX, maxY, maxZ);
+				super.addCollisionBoxesToList(world, x, y, z, aabb, list, entity);
 			}
-		}
 		
 		setBlockBoundsBasedOnSelection(world, x, y, z);
 	}
@@ -305,65 +299,40 @@ public class BlockDetailed extends BlockPartial
 	@Override
 	public BitSet getData( World world, int x, int y, int z ) {
 		
-		BitSet data = new BitSet();
+		BitSet data = new BitSet(8);
 		TEDetailed te = (TEDetailed) world.getTileEntity(x, y, z);
 		if (te == null) return data;
 		
 		if( chiselmode == 1 ) {
 
-			int subX = -1,subY = -1,subZ = -1;
-			
-			search: {
-				for(subX = 0; subX < 4; subX++) for(subZ = 0; subZ < 4; subZ++) for(subY = 0; subY < 4; subY++)
-					if(te.data.get((subX * 8 + subZ)*8 + subY)) break search;
-			}
-			if(subX != 4 || subY != 4 || subZ != 4) data.set((0 * 2 + 0)*2 + 0);
-			
-			search: {
-				for(subX = 4; subX < 8; subX++) for(subZ = 0; subZ < 4; subZ++) for(subY = 0; subY < 4; subY++)
-					if(te.data.get((subX * 8 + subZ)*8 + subY)) break search;
-			}
-			if(subX != 8 || subY != 4 || subZ != 4) data.set((1 * 2 + 0)*2 + 0);
-			
-			search: {
-				for(subX = 4; subX < 8; subX++) for(subZ = 4; subZ < 8; subZ++) for(subY = 0; subY < 4; subY++)
-					if(te.data.get((subX * 8 + subZ)*8 + subY)) break search;
-			}
-			if(subX != 8 || subY != 4 || subZ != 8) data.set((1 * 2 + 1)*2 + 0);
-			
-			search: {
-				for(subX = 0; subX < 4; subX++) for(subZ = 4; subZ < 8; subZ++) for(subY = 0; subY < 4; subY++)
-					if(te.data.get((subX * 8 + subZ)*8 + subY)) break search;
-			}
-			if(subX != 4 || subY != 4 || subZ != 8) data.set((0 * 2 + 1)*2 + 0);
-			
-			search: {
-				for(subX = 0; subX < 4; subX++) for(subZ = 0; subZ < 4; subZ++) for(subY = 4; subY < 8; subY++)
-					if(te.data.get((subX * 8 + subZ)*8 + subY)) break search;
-			}
-			if(subX != 4 || subY != 8 || subZ != 4) data.set((0 * 2 + 0)*2 + 1);
-			
-			search: {
-				for(subX = 4; subX < 8; subX++) for(subZ = 0; subZ < 4; subZ++) for(subY = 4; subY < 8; subY++)
-					if(te.data.get((subX * 8 + subZ)*8 + subY)) break search;
-			}
-			if(subX != 8 || subY != 8 || subZ != 4) data.set((1 * 2 + 0)*2 + 1);
-			
-			search: {
-				for(subX = 4; subX < 8; subX++) for(subZ = 4; subZ < 8; subZ++) for(subY = 4; subY < 8; subY++)
-					if(te.data.get((subX * 8 + subZ)*8 + subY)) break search;
-			}
-			if(subX != 8 || subY != 8 || subZ != 8) data.set((1 * 2 + 1)*2 + 1);
-			
-			search: {
-				for(subX = 0; subX < 4; subX++) for(subZ = 4; subZ < 8; subZ++) for(subY = 4; subY < 8; subY++)
-					if(te.data.get((subX * 8 + subZ)*8 + subY)) break search;
-			}
-			if(subX != 4 || subY != 8 || subZ != 8) data.set((0 * 2 + 1)*2 + 1);
-		
+			data = isEmptyQuad(te, 0, 0, 0, data);
+			data = isEmptyQuad(te, 1, 0, 0, data);
+			data = isEmptyQuad(te, 0, 1, 0, data);
+			data = isEmptyQuad(te, 1, 1, 0, data);
+			data = isEmptyQuad(te, 0, 0, 1, data);
+			data = isEmptyQuad(te, 1, 0, 1, data);
+			data = isEmptyQuad(te, 0, 1, 1, data);
+			data = isEmptyQuad(te, 1, 1, 1, data);
+
 		} else if ( chiselmode == 3 ) {
 			data = te.data;
 		}
+		
+		return data;
+	}
+	
+	public BitSet isEmptyQuad(TEDetailed te, int qx, int qy, int qz, BitSet data)
+	{
+		int subX = -1,subY = -1,subZ = -1;
+		
+		if( te.quads.get((qx * 2 + qz)*2 + qy) ) {
+			search: {
+				for(subX = 4*qx; subX < 4*(qx+1); subX++) for(subZ = 4*qz; subZ < 4*(qz+1); subZ++) for(subY = 4*qy; subY < 4*(qy+1); subY++)
+					if(te.data.get((subX * 8 + subZ)*8 + subY)) break search;
+			}
+			if(subX != 4*(qx+1) || subY != 4*(qy+1) || subZ != 4*(qz+1)) data.set((qx * 2 + qz)*2 + qy);
+		}
+		else data.set((qx * 2 + qz)*2 + qy);
 		
 		return data;
 	}
@@ -390,8 +359,23 @@ public class BlockDetailed extends BlockPartial
 		data.set((xSelected * 8 + zSelected)*8 + ySelected, false);
 		return data;
 	}
+
+	public static void BitSetToDetailled(World world, int x, int y, int z, BitSet data) {
+		BitSet quaddata = new BitSet(8);
+		
+		for (int subX = 0; subX < 8; subX++) {
+			for (int subZ = 0; subZ < 8; subZ++) {
+				for (int subY = 0; subY < 8; subY++) {
+					if (!data.get((subX*2+subZ)*2+subY))
+						quaddata.set((subX*2+subZ)*2+subY);
+				}
+			}
+		}
+		
+		BitSetToDetailled(world, x, y, z, data, quaddata );
+	}
 	
-	public static void BitSetToDetailled(World world, int x, int y, int z, BitSet data)
+	public static void BitSetToDetailled(World world, int x, int y, int z, BitSet data, BitSet quaddata)
 	{
 
 		TEPartial tep = (TEPartial)world.getTileEntity(x, y, z);
@@ -403,15 +387,7 @@ public class BlockDetailed extends BlockPartial
 		te.MetaID = tep.MetaID;
 		
 		te.setData(data);
-		
-		for (int subX = 0; subX < 8; subX++) {
-			for (int subZ = 0; subZ < 8; subZ++) {
-				for (int subY = 0; subY < 8; subY++) {
-					if (!te.getBlockExists(subX, subY, subZ))
-						te.setQuad(subX, subY, subZ);
-				}
-			}
-		}
+		te.setQuadData(quaddata);
 		
 		world.notifyBlocksOfNeighborChange(x, y, z, world.getBlock(x, y, z));
 		

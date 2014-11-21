@@ -12,13 +12,13 @@ public class TEDetailed extends NetworkTileEntity {
 	public short TypeID = -1;
 	public byte MetaID = 0;
 	public BitSet data;
+	public BitSet quads;
 	public static final byte Packet_Update = 0;
 	public static final byte Packet_Activate = 1;
 	public static final byte Packet_Delete = 2;
 	public static final byte BOX = 0;
 	public static final byte QUAD = 1;
 	protected byte packetType = -1;
-	private BitSet quads;
 
 	public TEDetailed() {
 		data = new BitSet(512);
@@ -64,6 +64,10 @@ public class TEDetailed extends NetworkTileEntity {
 		int z1 = z >= 4 ? 1 : 0;
 		int index = (x1 * 2 + z1) * 2 + y1;
 		quads.clear(index);
+	}
+
+	public void setQuadData(BitSet quaddata) {
+		quads = quaddata;
 	}
 
 	public boolean isQuadSolid(int x, int y, int z) {

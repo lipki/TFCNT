@@ -213,7 +213,8 @@ public class BlockStair extends BlockPartial
 		if( meta == newmeta ) {
 			BitSet data = metaToDetailed(meta);
 			data.andNot(BlockDetailed.getEmptyQuad(hitX, hitY, hitZ));
-			BlockDetailed.BitSetToDetailled(world, x, y, z, data );
+			BitSet quaddata = metaToQuad(meta);
+			BlockDetailed.BitSetToDetailled(world, x, y, z, data, quaddata );
 			data = null;
 			System.gc();
 		} else
@@ -233,6 +234,21 @@ public class BlockStair extends BlockPartial
 		if( meta ==  9 || meta == 11 || meta == 15 ) data.andNot(BlockDetailed.quad_1_0_1);
 		if( meta ==  3 || meta ==  0 || meta ==  4 ) data.andNot(BlockDetailed.quad_0_1_1);
 		if( meta ==  1 || meta ==  3 || meta ==  7 ) data.andNot(BlockDetailed.quad_1_1_1);
+		
+		return data;
+	}
+
+	private static BitSet metaToQuad(int meta) {
+		BitSet data = new BitSet(8);
+		
+		if( meta ==  8 || meta == 10 || meta == 14 ) data.set((0*2+0)*2+0);
+		if( meta == 10 || meta ==  9 || meta == 13 ) data.set((1*2+0)*2+0);
+		if( meta ==  0 || meta ==  2 || meta ==  6 ) data.set((0*2+0)*2+1);
+		if( meta ==  2 || meta ==  1 || meta ==  5 ) data.set((1*2+0)*2+1);
+		if( meta == 11 || meta ==  8 || meta == 12 ) data.set((0*2+1)*2+0);
+		if( meta ==  9 || meta == 11 || meta == 15 ) data.set((1*2+1)*2+0);
+		if( meta ==  3 || meta ==  0 || meta ==  4 ) data.set((0*2+1)*2+1);
+		if( meta ==  1 || meta ==  3 || meta ==  7 ) data.set((1*2+1)*2+1);
 		
 		return data;
 	}
