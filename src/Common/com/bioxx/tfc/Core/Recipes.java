@@ -6,6 +6,7 @@ import java.util.Random;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemBow;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.item.crafting.IRecipe;
@@ -127,11 +128,12 @@ public class Recipes
 		}
 
 		//Dyes
-		GameRegistry.addShapelessRecipe(new ItemStack(TFCItems.Dye,1,4),new Object[]{new ItemStack(TFCItems.Powder,1,6)});
-		GameRegistry.addShapelessRecipe(new ItemStack(TFCItems.Dye,1,2),new Object[]{new ItemStack(TFCItems.Powder,1,8)});
-		GameRegistry.addShapelessRecipe(new ItemStack(TFCItems.Dye,1,1),new Object[]{new ItemStack(TFCItems.Powder,1,5)});
-		GameRegistry.addShapelessRecipe(new ItemStack(TFCItems.Dye,1,11),new Object[]{new ItemStack(TFCItems.Powder,1,7)});
-		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(TFCItems.Dye,1,12),new Object[]{new ItemStack(TFCItems.Powder,1,8),new ItemStack(TFCItems.Powder,1,0), "blockSand"}));
+		GameRegistry.addShapelessRecipe(new ItemStack(TFCItems.Dye,1,4),new Object[]{new ItemStack(TFCItems.Powder,1,6)}); // Lapis - Blue
+		GameRegistry.addShapelessRecipe(new ItemStack(TFCItems.Dye,1,2),new Object[]{new ItemStack(TFCItems.Powder,1,8)}); // Malachite - Green
+		GameRegistry.addShapelessRecipe(new ItemStack(TFCItems.Dye,1,1),new Object[]{new ItemStack(TFCItems.Powder,1,5)}); // Hematite - Red
+		GameRegistry.addShapelessRecipe(new ItemStack(TFCItems.Dye,1,11),new Object[]{new ItemStack(TFCItems.Powder,1,7)}); // Limonite - Yellow
+		GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(TFCItems.Dye,1,12),new Object[]
+				{new ItemStack(TFCItems.Powder,1,8),new ItemStack(TFCItems.Powder,1,0), "blockSand"})); // Malachite, Flux & Sand - Light Blue
 
 		//Flux Powder
 		for (int i = 0; i < Global.STONE_FLUXINDEX.length; i++)
@@ -191,9 +193,12 @@ public class Recipes
 		GameRegistry.addRecipe(new ItemStack(TFCItems.GlassBottle, 3), new Object[]
 				{ "# #", " # ", Character.valueOf('#'), new ItemStack(Blocks.glass) });
 
-		for (int i = 0; i < 16; i++)
-			GameRegistry.addShapelessRecipe(new ItemStack(Blocks.carpet, 1, i), new Object[]
-					{ new ItemStack(TFCItems.Dye, 1, 15 - i), new ItemStack(Blocks.carpet, 1, WILD) });
+		String[] dyes =
+		{ "White", "Orange", "Magenta", "LightBlue", "Yellow", "Lime", "Pink", "Gray", "LightGray", "Cyan", "Purple", "Blue", "Brown", "Green", "Red", "Black" };
+		for (int i = 0; i < dyes.length; i++)
+		{
+			GameRegistry.addRecipe(new ShapelessOreRecipe(new ItemStack(Blocks.carpet, 1, i), "dye" + dyes[i], new ItemStack(Blocks.carpet, 1, WILD)));
+		}
 
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Blocks.rail, 64), new Object[] { "PsP","PsP", Character.valueOf('P'), "ingotIron", Character.valueOf('s'), "stickWood"}));
 		GameRegistry.addRecipe(new ShapedOreRecipe(new ItemStack(Blocks.golden_rail, 64), new Object[] { " r ","PsP","PsP", Character.valueOf('P'), "ingotGold", Character.valueOf('s'), "stickWood", Character.valueOf('r'), Items.redstone}));
@@ -447,7 +452,6 @@ public class Recipes
 		// Otherwise TFC can not use the 4 planks recipe to create its own crafting upgrade.
 		RemoveRecipe(new ItemStack(Blocks.crafting_table));
 		// Other Conflicting Recipes
-		RemoveRecipe(new ItemStack(Items.bow));
 		RemoveRecipe(new ItemStack(Items.fishing_rod));
 		RemoveRecipe(new ItemStack(Blocks.wooden_button));
 		RemoveRecipe(new ItemStack(Items.flint_and_steel));
@@ -455,6 +459,9 @@ public class Recipes
 		RemoveRecipe(new ItemStack(Items.sugar));
 		RemoveRecipe(new ItemStack(Items.glass_bottle, 3));
 		RemoveRecipe(new ItemStack(Items.paper, 3));
+
+		//Have to do this by class for some items that are overriden like the bow
+		RemoveRecipe(ItemBow.class);
 
 		//Recipe Configuration
 		if (TFCCrafting.anvilRecipe == false)
@@ -2300,6 +2307,23 @@ public class Recipes
 				ItemStack recipeResult = recipe.getRecipeOutput();
 
 				if (ItemStack.areItemStacksEqual(resultItem, recipeResult))
+					recipes.remove(i--);
+			}
+		}
+	}
+
+	public static void RemoveRecipe(Class clazz)
+	{
+		List<IRecipe> recipes = CraftingManager.getInstance().getRecipeList();
+		for (int i = 0; i < recipes.size(); i++)
+		{
+			IRecipe tmpRecipe = recipes.get(i);
+			if (tmpRecipe instanceof IRecipe)
+			{
+				IRecipe recipe = tmpRecipe;
+				ItemStack recipeResult = recipe.getRecipeOutput();
+
+				if (recipeResult!= null && clazz.isInstance(recipeResult.getItem()))
 					recipes.remove(i--);
 			}
 		}

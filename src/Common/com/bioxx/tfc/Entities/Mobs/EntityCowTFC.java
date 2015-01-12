@@ -97,6 +97,7 @@ public class EntityCowTFC extends EntityCow implements IAnimal
 		this.tasks.addTask(3, new EntityAITempt(this, 1.2F, TFCItems.RiceGrain, false));
 		this.tasks.addTask(3, new EntityAITempt(this, 1.2F, TFCItems.BarleyGrain, false));
 		this.tasks.addTask(3, new EntityAITempt(this, 1.2F, TFCItems.OatGrain, false));
+		this.tasks.addTask(3, new EntityAITempt(this, 1.2F, TFCItems.MaizeEar, false));
 		this.tasks.addTask(3, new EntityAIAvoidEntityTFC(this, EntityWolfTFC.class, 8f, 0.5F, 0.7F));
 		this.tasks.addTask(6, this.aiEatGrass);
 
@@ -398,12 +399,11 @@ public class EntityCowTFC extends EntityCow implements IAnimal
 					return true;
 				}
 			}
-			//player.addChatMessage(new ChatComponentText(getGender()==GenderEnum.FEMALE ? "Female" : "Male"));
+
 			if(getGender()==GenderEnum.FEMALE && pregnant)
 			{
 				player.addChatMessage(new ChatComponentText("Pregnant"));
 			}
-			//player.addChatMessage("12: "+dataWatcher.getWatchableObjectInt(12)+", 15: "+dataWatcher.getWatchableObjectInt(15));
 
 			if(getGender() == GenderEnum.FEMALE && isAdult() && hasMilkTime < TFC_Time.getTotalTicks() && this.checkFamiliarity(InteractionEnum.MILK, player))
 			{
@@ -686,7 +686,8 @@ public class EntityCowTFC extends EntityCow implements IAnimal
 				lastFamiliarityUpdate = totalDays;
 				familiarizedToday = false;
 				float familiarityChange = (6 * obedience_mod / aggression_mod);
-				if(this.isAdult() && (familiarity > 30 && familiarity < 80)){
+				if (this.isAdult() && familiarity > 35) // Adult caps at 35
+				{
 					//Nothing
 				}
 				else if(this.isAdult()){
@@ -739,7 +740,8 @@ public class EntityCowTFC extends EntityCow implements IAnimal
 
 	@Override
 	public boolean trySetName(String name, EntityPlayer player) {
-		if(this.checkFamiliarity(InteractionEnum.NAME, player)&& !this.hasCustomNameTag()){
+		if (this.checkFamiliarity(InteractionEnum.NAME, player))
+		{
 			this.setCustomNameTag(name);
 			this.setAlwaysRenderNameTag(true);
 			return true;
@@ -752,11 +754,9 @@ public class EntityCowTFC extends EntityCow implements IAnimal
 	public boolean checkFamiliarity(InteractionEnum interaction, EntityPlayer player) {
 		boolean flag = false;
 		switch(interaction){
-		case MOUNT: flag = familiarity > 15;break;
 		case BREED: flag = familiarity > 20;break;
-		case SHEAR: flag = familiarity > 10;break;
 		case MILK: flag = familiarity > 15;break;
-		case NAME: flag = familiarity > 35;break;
+		case NAME: flag = familiarity > 40;break; // 5 higher than adult cap
 		default: break;
 		}
 		if(!flag && player != null && !player.worldObj.isRemote){

@@ -1,10 +1,13 @@
 package com.bioxx.tfc.Blocks;
 
+import java.util.Random;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.renderer.texture.IIconRegister;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
@@ -214,7 +217,14 @@ public class BlockSlab extends BlockPartial
 	@Override
 	public boolean isSideSolid(IBlockAccess world, int x, int y, int z, ForgeDirection side)
 	{
-		TEPartial te = (TEPartial) world.getTileEntity(x, y, z);
+		TEPartial te = null;
+
+		if (world.getTileEntity(x, y, z) instanceof TEPartial)
+			te = (TEPartial) world.getTileEntity(x, y, z);
+
+		if(te == null)
+			return false;
+
 		long data = te.extraData;
 
 		switch(side)
@@ -240,5 +250,11 @@ public class BlockSlab extends BlockPartial
 		default: 
 			return false;
 		}
+	}
+	
+	@Override
+	public Item getItemDropped(int metadata, Random rand, int fortune)
+	{
+		return null;
 	}
 }

@@ -13,6 +13,7 @@ import net.minecraftforge.common.MinecraftForge;
 import com.bioxx.tfc.TFCBlocks;
 import com.bioxx.tfc.TFCItems;
 import com.bioxx.tfc.Core.TFC_Core;
+import com.bioxx.tfc.Core.TFC_Time;
 import com.bioxx.tfc.Items.ItemMeltedMetal;
 import com.bioxx.tfc.api.Food;
 import com.bioxx.tfc.api.HeatIndex;
@@ -365,11 +366,11 @@ public class TEFirepit extends TEFireEntity implements IInventory
 				{
 					int[] cookedTasteProfile = new int[] {0,0,0,0,0};
 					Random R = new Random(((ICookableFood)is.getItem()).getFoodID()+(((int)Food.getCooked(is)-600)/120));
-					cookedTasteProfile[0] = R.nextInt(30)-15;
-					cookedTasteProfile[1] = R.nextInt(30)-15;
-					cookedTasteProfile[2] = R.nextInt(30)-15;
-					cookedTasteProfile[3] = R.nextInt(30)-15;
-					cookedTasteProfile[4] = R.nextInt(30)-15;
+					cookedTasteProfile[0] = R.nextInt(31) - 15;
+					cookedTasteProfile[1] = R.nextInt(31) - 15;
+					cookedTasteProfile[2] = R.nextInt(31) - 15;
+					cookedTasteProfile[3] = R.nextInt(31) - 15;
+					cookedTasteProfile[4] = R.nextInt(31) - 15;
 					Food.setCookedProfile(is, cookedTasteProfile);
 					Food.setFuelProfile(is, EnumFuelMaterial.getFuelProfile(fuelTasteProfile));
 				}
@@ -490,6 +491,7 @@ public class TEFirepit extends TEFireEntity implements IInventory
 		if(worldObj.getBlock(x, y, z) == TFCBlocks.SmokeRack)
 		{
 			TESmokeRack te = (TESmokeRack) worldObj.getTileEntity(x, y, z);
+			te.lastSmokedTime = (int)TFC_Time.getTotalHours();
 			if(te.getStackInSlot(0) != null)
 			{
 				ItemStack is = te.getStackInSlot(0);

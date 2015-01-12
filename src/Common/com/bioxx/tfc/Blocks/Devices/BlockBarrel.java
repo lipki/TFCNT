@@ -1,6 +1,8 @@
 package com.bioxx.tfc.Blocks.Devices;
 
+import java.util.ArrayList;
 import java.util.List;
+
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.particle.EffectRenderer;
@@ -22,6 +24,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidContainerRegistry;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.IFluidContainerItem;
+
 import com.bioxx.tfc.Reference;
 import com.bioxx.tfc.TFCBlocks;
 import com.bioxx.tfc.TFCItems;
@@ -35,6 +38,7 @@ import com.bioxx.tfc.Items.ItemBlocks.ItemBarrels;
 import com.bioxx.tfc.Items.ItemBlocks.ItemLargeVessel;
 import com.bioxx.tfc.TileEntities.TEBarrel;
 import com.bioxx.tfc.api.Constant.Global;
+
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -134,6 +138,8 @@ public class BlockBarrel extends BlockTerraContainer
 					is.setTagCompound(nbt);
 					EntityItem ei = new EntityItem(world,x,y,z,is);
 					world.spawnEntityInWorld(ei);
+
+					te.fluid = null; //Drain Liquid before we clear out the inventory to prevent dupes.
 
 					for(int s = 0; s < te.getSizeInventory(); ++s)
 						te.setInventorySlotContents(s, null);
@@ -257,6 +263,7 @@ public class BlockBarrel extends BlockTerraContainer
 			te.fluid.writeToNBT(fluidNBT);
 		nbt.setTag("fluidNBT", fluidNBT);
 		nbt.setInteger("barrelType", te.barrelType);
+		nbt.setInteger("SealTime", te.sealtime);
 		nbt.setBoolean("Sealed", te.getSealed());
 
 		NBTTagList nbttaglist = new NBTTagList();
@@ -310,7 +317,7 @@ public class BlockBarrel extends BlockTerraContainer
 
 	protected boolean handleInteraction(EntityPlayer player, TEBarrel te) 
 	{
-		if (!te.getSealed() && te.getInvCount() <= 1) 
+		if (!te.getSealed() && te.getInvCount() <= 1 && !te.getWorldObj().isRemote) 
 		{
 			ItemStack equippedItem = player.getCurrentEquippedItem();
 			if(equippedItem == null)
@@ -414,7 +421,7 @@ public class BlockBarrel extends BlockTerraContainer
 						{
 							if(is.getItemDamage() == 0)
 								return false;
-							
+
 							FluidStack fs = te.getFluidStack().copy();
 							if(fs.amount > 5000)
 							{
@@ -464,5 +471,31 @@ public class BlockBarrel extends BlockTerraContainer
 	public boolean addHitEffects(World worldObj, MovingObjectPosition target, EffectRenderer effectRenderer)
 	{
 		return true;
+	}
+
+	/**
+	 * Get the block's damage value (for use with pick block).
+	 */
+	@Override
+	public int getDamageValue(World world, int x, int y, int z)
+	{
+		TileEntity te = world.getTileEntity(x, y, z);
+		if (te != null && te instanceof TEBarrel)
+			return ((TEBarrel)te).barrelType;
+		return 0;
+	}
+
+	/**
+	 * This returns a complete list of items dropped from this block.
+	 */
+	@Override
+	public ArrayList<ItemStack> getDrops(World world, int x, int y, int z, int metadata, int fortune)
+	{
+		ArrayList<ItemStack> ret = new ArrayList<ItemStack>();
+
+		int damageValue = getDamageValue(world, x, y, z);
+		ret.add(new ItemStack(this, 1, damageValue));
+
+		return ret;
 	}
 }
