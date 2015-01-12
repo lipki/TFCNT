@@ -9,6 +9,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
+import com.bioxx.tfc.TFCItems;
 import com.bioxx.tfc.Containers.Slots.SlotCraftingMetal;
 import com.bioxx.tfc.Core.Player.PlayerInventory;
 import com.bioxx.tfc.api.Crafting.CraftingManagerTFC;
@@ -32,6 +33,8 @@ public class ContainerSpecialCrafting extends ContainerTFC
 			if(is != null)
 				craftMatrix.setInventorySlotContents(j1, is.copy());
 		}
+		
+		craftResult.setInventorySlotContents(0, new ItemStack(TFCItems.LooseRock, 1, is.getItemDamage()));
 
 		this.worldObj = world;
 
@@ -61,7 +64,16 @@ public class ContainerSpecialCrafting extends ContainerTFC
 	@Override
 	public void onCraftMatrixChanged(IInventory ii)
 	{
-		this.craftResult.setInventorySlotContents(0, CraftingManagerTFC.getInstance().findMatchingRecipe(this.craftMatrix, worldObj));
+		boolean full = true;
+		for (int j1 = 0; j1 < 25; j1++)
+			if(craftMatrix.getStackInSlot(j1) == null)
+			{
+				full = false;
+				break;
+			}
+		
+		if(full == false)
+			this.craftResult.setInventorySlotContents(0, CraftingManagerTFC.getInstance().findMatchingRecipe(this.craftMatrix, worldObj));
 	}
 
 	/**
